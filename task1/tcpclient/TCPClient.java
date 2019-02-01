@@ -37,7 +37,7 @@ public class TCPClient {
       catch(IOException e){
         clientSocket.close();
       }
-      // Return the input
+      // Return the input of the server response
       return stringInput.toString();
     }
 

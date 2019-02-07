@@ -6,7 +6,7 @@ public class HTTPAsk {
     public static void main( String[] args) throws IOException {
 
       int httpPort;
-      if(args[0]){
+      if(args.length == 1){
         httpPort = Integer.parseInt(args[0]);
       } else {
         httpPort = 8888;
@@ -56,24 +56,22 @@ public class HTTPAsk {
             else if(params[i].equals("string"))
               string  = params[++i];
           }
-
-          // First add the HTTP header response
-          response.append(HTTPHeader);
-
           // If both hostname and port are assignd
-          if(hostname != null && port != null){
+          if(hostname != null && port != null && params[1].equals("/ask")){
             try{
+              String serverResp = TCPClient.askServer(hostname, Integer.parseInt(port), string);
+              // First add the HTTP header response
+              response.append(HTTPHeader);
               // Add the server response as data
-              response.append(TCPClient.askServer(hostname, Integer.parseInt(port), string));
+              response.append(serverResp);
             } catch(IOException e) {
-              // If error, we didn't find the server
-              response.append("HTTP/1.1 404 NOT FOUND\r\n");
+              // If error, we couldn't connect to server
+              response.append("HTTP/1.1 404 Not Found\r\n");
             }
           } else {
-            // If either hostname or port is left empty
-            response.append("HTTP/1.1 400 BAD REQUEST\r\n");
+            // If either hostname or port is left empty (or we don't include a ask)
+            response.append("HTTP/1.1 400 Bad Request\r\n");
           }
-
           // Return our response to client
           // close connectiion
           outStream.writeBytes(response.toString());

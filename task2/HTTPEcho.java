@@ -3,13 +3,12 @@ import java.io.*;
 
 public class HTTPEcho {
     public static void main( String[] args) throws  IOException{
-
       // This is where we put the data from client
       String fromClient;
       // Get the port number first argument and open port
       ServerSocket HTTPSocket = new ServerSocket(Integer.parseInt(args[0]));
       // The http header
-      String HTTPHeader = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n";
+      String HTTPHeader = "HTTP/1.1 200 OK\r\n\r\n";
 
       while(true) {
         // This is what we return to the client
@@ -22,11 +21,9 @@ public class HTTPEcho {
         // The header should return first
         toClient.append(HTTPHeader);
         // While the client is inputting, read the line
-        toClient.append("<table>");
         while((fromClient = inStream.readLine()) != null &&  fromClient.length() != 0){
-          toClient.append("<tr><td>" + fromClient + "</td></tr>");
+          toClient.append(fromClient + '\n');
         }
-        toClient.append("</table>");
         // Echo the input from client
         outStream.writeBytes(toClient.toString());
         // Close the connection
